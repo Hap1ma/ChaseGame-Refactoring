@@ -1,108 +1,44 @@
 #include "Prey.h"
-#include "Predator.h"
-#include "Arena.h"
 
-Prey::Prey(const std::string& name, const Point2D& location) : name(name), location(location) {}
+Prey::Prey(const std::string& name, const Point2D& location) : name(name), location(location), isAlive(true) {}
 
-void Prey::MoveTo(int x, int y) {
-    location.setPoint(x, y);
+std::string Prey::getName() const {
+    return name;
 }
 
-void Prey::AutoMove(const Arena& arena, int z) {
-    int q;
-    if (z == 1) {
-        q = rand() % 8;
-    } else {
-        std::cout << "Куда идти?\n0-вверх-влево 1-вверх 2-вверх-вправо 3-влево 4-вправо 5-вниз-влево 6-вниз 7-вниз-вправо" << std::endl;
-        std::cin >> q;
+Point2D Prey::getLocation() const {
+    return location;
+}
+
+void Prey::autoMove(const Arena& arena) {
+    // Получаем текущие координаты жертвы
+    int currentX = location.getX();
+    int currentY = location.getY();
+
+    // Генерируем случайное направление (вверх, вниз, влево, вправо)
+    int direction = rand() % 4;
+
+    // Обновляем координаты в соответствии с выбранным направлением
+    if (direction == 0 && currentX > 0) {
+        currentX--;
+    } else if (direction == 1 && currentX < arena.getWidth() - 1) {
+        currentX++;
+    } else if (direction == 2 && currentY > 0) {
+        currentY--;
+    } else if (direction == 3 && currentY < arena.getHeight() - 1) {
+        currentY++;
     }
-    
-    switch (q) {
-        case 0:
-            if (location.getX() != 1 && location.getY() != 1) {
-                location.setPoint(location.getX() - 1, location.getY() - 1);
-            } else {
-                std::cout << "Выход за границу арены!" << std::endl;
-            }
-            break;
-        case 1:
-            if (location.getX() != 1) {
-                location.setPoint(location.getX() - 1, location.getY());
-            } else {
-                std::cout << "Выход за границу арены!" << std::endl;
-            }
-            break;
-        case 2:
-            if (location.getX() != 1 && location.getY() != arena.getSize() - 2) {
-                location.setPoint(location.getX() - 1, location.getY() + 1);
-            } else {
-                std::cout << "Выход за границу арены!" << std::endl;
-            }
-            break;
-        case 3:
-            if (location.getY() != 1) {
-                location.setPoint(location.getX(), location.getY() - 1);
-            } else {
-                std::cout << "Выход за границу арены!" << std::endl;
-            }
-            break;
-        case 4:
-            if (location.getY() != arena.getSize() - 2) {
-                location.setPoint(location.getX(), location.getY() + 1);
-            } else {
-                std::cout << "Выход за границу арены!" << std::endl;
-            }
-            break;
-        case 5:
-            if (location.getX() != arena.getSize() - 2 && location.getY() != 1) {
-                location.setPoint(location.getX() + 1, location.getY() - 1);
-            } else {
-                std::cout << "Выход за границу арены!" << std::endl;
-            }
-            break;
-        case 6:
-            if (location.getX() != arena.getSize() - 2) {
-                location.setPoint(location.getX() + 1, location.getY());
-            } else {
-                std::cout << "Выход за границу арены!" << std::endl;
-            }
-            break;
-        case 7:
-            if (location.getX() != arena.getSize() - 2 && location.getY() != arena.getSize() - 2) {
-                location.setPoint(location.getX() + 1, location.getY() + 1);
-            } else {
-                std::cout << "Выход за границу арены!" << std::endl;
-            }
-            break;
-        default:
-            std::cout << "Неверный ввод!" << std::endl;
-            break;
-    }
+
+    // Обновляем новые координаты жертвы
+    location.setX(currentX);
+    location.setY(currentY);
+}
+
+bool Prey::getIsAlive() const {
+    return isAlive;
 }
 
 std::ostream& operator<<(std::ostream& out, const Prey& prey) {
-    out << "Имя: " << prey.name << ", Координаты: " << prey.location;
+    out << "Name: " << prey.name << ", Location: " << prey.location << ", Alive: " << (prey.isAlive ? "Yes" : "No");
     return out;
-}
-
-bool check(const Prey& prey, const Predator& predator) {
-    Point2D preyLoc = prey.location;
-    Point2D predatorLoc = predator.location;
-
-    return (preyLoc == predatorLoc);
-}
-
-bool check1(const Prey& prey, const Predator& predator) {
-    Point2D preyLoc = prey.location;
-    Point2D predatorLoc = predator.location;
-
-    return (preyLoc.getX() == predatorLoc.getX() + 1 && preyLoc.getY() == predatorLoc.getY() + 1);
-}
-
-int Prey::getX() const {
-    return location.getX();
-}
-
-int Prey::getY() const {
-    return location.getY();
 }

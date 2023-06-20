@@ -1,22 +1,29 @@
 #ifndef POINT2D_H
 #define POINT2D_H
 
-#include <iostream>
-
+// Класс для работы с двумерными координатами
 class Point2D {
 private:
-    int x;
-    int y;
+    int x; // Координата X
+    int y; // Координата Y
 
 public:
-    // Конструктор
-    Point2D(int x = 0, int y = 0);
+    // Конструктор по умолчанию
+    Point2D();
 
-    // Перегрузка оператора вывода
+    // Конструктор с параметрами
+    Point2D(int x, int y);
+
+    // Геттеры для координат X и Y
+    int getX() const;
+    int getY() const;
+
+    // Сеттеры для координат X и Y
+    void setX(int x);
+    void setY(int y);
+
+    // Перегрузка оператора вывода для удобного вывода координат
     friend std::ostream& operator<<(std::ostream& out, const Point2D& point);
-
-    void setPoint(int x, int y);
-    bool operator==(const Point2D& point);
 };
 
 #endif

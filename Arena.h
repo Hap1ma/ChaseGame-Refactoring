@@ -2,27 +2,35 @@
 #define ARENA_H
 
 #include <vector>
-#include "Prey.h"
-#include "Predator.h"
+#include "Prey.h"    // Включаем заголовочный файл с определением класса Prey
+#include "Predator.h" // Включаем заголовочный файл с определением класса Predator
 
+// Класс для представления арены
 class Arena {
 private:
-    int size;
-    std::vector<Prey> preyList;
-    std::vector<Predator> predatorList;
+    int width;               // Ширина арены
+    int height;              // Высота арены
+    std::vector<Prey> prey;   // Вектор жертв
+    std::vector<Predator> predator; // Вектор хищников
 
 public:
-    Arena(int size);
+    // Конструктор с параметрами
+    Arena(int width, int height);
 
-    void AddPrey(const Prey& prey);
-    void AddPredator(const Predator& predator);
+    // Метод для добавления жертвы на арену
+    void addPrey(const Prey& newPrey);
 
-    void RemovePrey(int index);
-    void RemovePredator(int index);
+    // Метод для добавления хищника на арену
+    void addPredator(const Predator& newPredator);
 
-    void DisplayArena() const;
+    // Метод для выполнения одного шага симуляции
+    void simulateStep();
 
-    int getSize() const;
+    // Метод, возвращающий ширину арены
+    int getWidth() const;
+
+    // Метод, возвращающий высоту арены
+    int getHeight() const;
 };
 
 #endif

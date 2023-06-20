@@ -1,46 +1,50 @@
 #include "Arena.h"
-#include <iostream>
 
-Arena::Arena(int size) : size(size) {}
+Arena::Arena(int width, int height) : width(width), height(height) {}
 
-void Arena::AddPrey(const Prey& prey) {
-    preyList.push_back(prey);
+void Arena::addPrey(const Prey& newPrey) {
+    prey.push_back(newPrey);
 }
 
-void Arena::AddPredator(const Predator& predator) {
-    predatorList.push_back(predator);
+void Arena::addPredator(const Predator& newPredator) {
+    predator.push_back(newPredator);
 }
 
-void Arena::RemovePrey(int index) {
-    if (index >= 0 && index < preyList.size()) {
-        preyList.erase(preyList.begin() + index);
-    } else {
-        std::cout << "Ошибка: недопустимый индекс!" << std::endl;
+void Arena::simulateStep() {
+    // Перебираем все хищники на арене
+    for (auto& pred : predator) {
+        // Для каждого хищника находим ближайшую жертву
+        Prey* closestPrey = nullptr;
+        int closestDistance = INT_MAX;
+
+        for (auto& p : prey) {
+            int distance = abs(p.getLocation().getX() - pred.getLocation().getX()) + abs(p.getLocation().getY() - pred.getLocation().getY());
+
+            if (distance < closestDistance) {
+                closestDistance = distance;
+                closestPrey = &p;
+            }
+        }
+
+        // Если есть ближайшая жертва, хищник преследует ее
+        if (closestPrey != nullptr) {
+            pred.chasePrey(*closestPrey);
+
+            // Если хищник достиг жертвы, жертва умирает
+            if (pred.getLocation() == closestPrey->getLocation()) {
+                closestPrey->isAlive = false;
+            }
+        }
     }
+
+    // Удаляем мертвых жертв из вектора
+    prey.erase(std::remove_if(prey.begin(), prey.end(), [](const Prey& p) { return !p.getIsAlive(); }), prey.end());
 }
 
-void Arena::RemovePredator(int index) {
-    if (index >= 0 && index < predatorList.size()) {
-        predatorList.erase(predatorList.begin() + index);
-    } else {
-        std::cout << "Ошибка: недопустимый индекс!" << std::endl;
-    }
+int Arena::getWidth() const {
+    return width;
 }
 
-void Arena::DisplayArena() const {
-    std::cout << "Размер арены: " << size << "x" << size << std::endl;
-
-    std::cout << "Список жертв:" << std::endl;
-    for (const auto& prey : preyList) {
-        std::cout << prey << std::endl;
-    }
-
-    std::cout << "Список хищников:" << std::endl;
-    for (const auto& predator : predatorList) {
-        std::cout << predator << std::endl;
-    }
-}
-
-int Arena::getSize() const {
-    return size;
+int Arena::getHeight() const {
+    return height;
 }

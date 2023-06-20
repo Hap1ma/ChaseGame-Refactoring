@@ -2,29 +2,35 @@
 #define PREDATOR_H
 
 #include <iostream>
-#include <string>
-#include "Point2D.h"
+#include "Point2D.h" // Включаем заголовочный файл с определением класса Point2D
 
-class Prey; // Объявление класса Prey
+// Объявление класса Prey для разрешения циклической зависимости
+class Prey;
+
+// Объявление класса Arena для разрешения циклической зависимости
 class Arena;
 
+// Класс для представления хищника
 class Predator {
 private:
-    std::string name;
-    Point2D location;
+    std::string name;     // Имя хищника
+    Point2D location;     // Координаты хищника
 
 public:
+    // Конструктор с параметрами
     Predator(const std::string& name, const Point2D& location);
 
-    void MoveTo(int x, int y);
-    void AutoMove(const Arena& arena, int z);
+    // Метод, возвращающий имя хищника
+    std::string getName() const;
 
+    // Метод, возвращающий координаты хищника
+    Point2D getLocation() const;
+
+    // Метод для перемещения хищника в направлении заданной жертвы
+    void chasePrey(const Prey& prey);
+
+    // Перегрузка оператора вывода для удобного вывода информации о хищнике
     friend std::ostream& operator<<(std::ostream& out, const Predator& predator);
-    friend bool check(const Prey& prey, const Predator& predator);
-    friend bool check1(const Prey& prey, const Predator& predator);
-
-    int getX() const;
-    int getY() const;
 };
 
 #endif
